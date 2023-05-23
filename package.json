@@ -1,0 +1,1 @@
+{"type":"module","direction":"Росбанк","sum":15000,"averageCount":6,"timeout":30,"course":"81.51","datetime":1684501137259,"dependencies":{"fs":"^0.0.1-security","path":"^0.12.7","url":"^0.11.0"}}
