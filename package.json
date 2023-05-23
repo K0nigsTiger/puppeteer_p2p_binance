@@ -1,1 +1,1 @@
-{"type":"module","direction":"Росбанк","sum":15000,"averageCount":6,"timeout":30,"course":"81.51","datetime":1684501137259,"dependencies":{"fs":"^0.0.1-security","path":"^0.12.7","url":"^0.11.0"}}
+{"type":"commonjs","direction":"Тинькофф","sum":15000,"averageCount":6,"timeout":30,"course":"81.71","datetime":1684849865585,"dependencies":{"fs":"^0.0.1-security","path":"^0.12.7","puppeteer-cluster":"^0.23.0","ts-node":"^10.9.1","typescript":"^5.0.4","url":"^0.11.0"},"devDependencies":{"babel-plugin-transform-import-meta":"^2.2.0"}}
