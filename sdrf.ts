@@ -6,33 +6,22 @@ import * as fs from 'fs'
 
 const _filename = fileURLToPath(require('url').pathToFileURL(__filename).toString());
 const _dirname = dirname(_filename);
-let direction, sum, averageCount, timeout, obj;
+let obj;
 
-let test = [];
-test.push(
-  {"Росбанк":"https://p2p.binance.com/ru/trade/sell/USDT?fiat=RUB&payment=RosBankNew&asset=USDT"}, 
-  {"Тинькофф":"https://p2p.binance.com/ru/trade/sell/USDT?fiat=RUB&payment=TinkoffNew&asset=USDT"} 
-);
-
-let filepath = path.resolve(_dirname, './package.json');
+let filepath = path.resolve(_dirname, './directions.json');
 fs.readFile(filepath, (err, data) => {
   if(err){
     console.log('Read error');
   }else{
     obj = JSON.parse(data.toString());
-    direction = obj.direction;
-    sum = obj.sum;
-    averageCount = obj.averageCount;
-    timeout = obj.timeout;
   }
 });
 
 (async() => {
   try{
-
     const cluster = await Cluster.launch({
       concurrency: Cluster.CONCURRENCY_CONTEXT,
-      maxConcurrency: 2,
+      maxConcurrency: 5,
     });
   
     await cluster.task(async ({ page, data }) => {
@@ -53,7 +42,7 @@ fs.readFile(filepath, (err, data) => {
       await page.click(acceptCookie);
       await page.waitForTimeout(1000);
   
-      await page.type(amountSet, sum.toString());
+      await page.type(amountSet, data.sum.toString());
       await page.click(sumSet);
   
       await page.waitForSelector(fiatSelector);
@@ -77,17 +66,29 @@ fs.readFile(filepath, (err, data) => {
       console.log(inner_html);
   
       let totalSum = 0;
-      for(let i = 0; i < averageCount; i++){
+      for(let i = 0; i < data.average; i++){
         totalSum = totalSum + parseFloat(inner_html[i]);
       }
   
-      totalSum = parseFloat((totalSum / averageCount).toPrecision(4));
-      obj.direction = data.dir.toString();
-      obj.course = totalSum.toString();
-      obj.datetime = Date.now();
-      let file = JSON.stringify(obj);
-      //console.log(obj);
+      totalSum = parseFloat((totalSum / data.average).toPrecision(4));
+
+      obj.directions.forEach((element, index) => {
+        if(element.name == data.dir){
+          obj.directions[index].course = totalSum;
+          obj.directions[index].datetime = Date.now();
+        }
+      });
+
+      await page.screenshot({path: path.resolve(_dirname, `./${data.dir}.png`)});
+    });
   
+    obj.directions.forEach((element) => {
+      let info = {url: element.url, dir: element.name, sum: element.sum, average: element.averageCount};
+      cluster.queue(info);
+    });
+
+    await cluster.idle().then(() => {
+      let file = JSON.stringify(obj); 
       fs.writeFile(filepath, file, (err) => {
         if(err){
           console.log('Write error');
@@ -95,21 +96,8 @@ fs.readFile(filepath, (err, data) => {
           console.log(fs.readFileSync(filepath, "utf-8"));
         }
       });
-  
-      await page.screenshot({path: path.resolve(_dirname, `./${data.dir}.png`)});
-  
-    });
-  
-    test.forEach((element) => {
-      direction = Object.keys(element)[0];
-      let info = {url: element[direction], dir: direction};
-      cluster.queue(info);
     });
 
-    //cluster.queue('https://p2p.binance.com/ru/trade/sell/USDT?fiat=RUB&payment=TinkoffNew&asset=USDT');
-    // many more pages
-  
-    await cluster.idle();
     await cluster.close();
   }
   catch(e){

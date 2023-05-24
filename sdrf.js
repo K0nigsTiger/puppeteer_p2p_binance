@@ -43,20 +43,14 @@ var path = require("path");
 var fs = require("fs");
 var _filename = fileURLToPath(require('url').pathToFileURL(__filename).toString());
 var _dirname = dirname(_filename);
-var direction, sum, averageCount, timeout, obj;
-var test = [];
-test.push({ "Росбанк": "https://p2p.binance.com/ru/trade/sell/USDT?fiat=RUB&payment=RosBankNew&asset=USDT" }, { "Тинькофф": "https://p2p.binance.com/ru/trade/sell/USDT?fiat=RUB&payment=TinkoffNew&asset=USDT" });
-var filepath = path.resolve(_dirname, './package.json');
+var obj;
+var filepath = path.resolve(_dirname, './directions.json');
 fs.readFile(filepath, function (err, data) {
     if (err) {
         console.log('Read error');
     }
     else {
         obj = JSON.parse(data.toString());
-        direction = obj.direction;
-        sum = obj.sum;
-        averageCount = obj.averageCount;
-        timeout = obj.timeout;
     }
 });
 (function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -67,14 +61,14 @@ fs.readFile(filepath, function (err, data) {
                 _a.trys.push([0, 5, , 6]);
                 return [4 /*yield*/, Cluster.launch({
                         concurrency: Cluster.CONCURRENCY_CONTEXT,
-                        maxConcurrency: 2,
+                        maxConcurrency: 5,
                     })];
             case 1:
                 cluster_1 = _a.sent();
                 return [4 /*yield*/, cluster_1.task(function (_a) {
                         var page = _a.page, data = _a.data;
                         return __awaiter(void 0, void 0, void 0, function () {
-                            var acceptCookie, fiatSelector, directionSelector, sumSet, amountSet, priceDivClass, selector, inner_html, totalSum, i, file;
+                            var acceptCookie, fiatSelector, directionSelector, sumSet, amountSet, priceDivClass, selector, inner_html, totalSum, i;
                             return __generator(this, function (_b) {
                                 switch (_b.label) {
                                     case 0: 
@@ -105,7 +99,7 @@ fs.readFile(filepath, function (err, data) {
                                         return [4 /*yield*/, page.waitForTimeout(1000)];
                                     case 6:
                                         _b.sent();
-                                        return [4 /*yield*/, page.type(amountSet, sum.toString())];
+                                        return [4 /*yield*/, page.type(amountSet, data.sum.toString())];
                                     case 7:
                                         _b.sent();
                                         return [4 /*yield*/, page.click(sumSet)];
@@ -151,21 +145,14 @@ fs.readFile(filepath, function (err, data) {
                                         inner_html = _b.sent();
                                         console.log(inner_html);
                                         totalSum = 0;
-                                        for (i = 0; i < averageCount; i++) {
+                                        for (i = 0; i < data.average; i++) {
                                             totalSum = totalSum + parseFloat(inner_html[i]);
                                         }
-                                        totalSum = parseFloat((totalSum / averageCount).toPrecision(4));
-                                        obj.direction = data.dir.toString();
-                                        obj.course = totalSum.toString();
-                                        obj.datetime = Date.now();
-                                        file = JSON.stringify(obj);
-                                        //console.log(obj);
-                                        fs.writeFile(filepath, file, function (err) {
-                                            if (err) {
-                                                console.log('Write error');
-                                            }
-                                            else {
-                                                console.log(fs.readFileSync(filepath, "utf-8"));
+                                        totalSum = parseFloat((totalSum / data.average).toPrecision(4));
+                                        obj.directions.forEach(function (element, index) {
+                                            if (element.name == data.dir) {
+                                                obj.directions[index].course = totalSum.toString();
+                                                obj.directions[index].datetime = Date.now();
                                             }
                                         });
                                         return [4 /*yield*/, page.screenshot({ path: path.resolve(_dirname, "./".concat(data.dir, ".png")) })];
@@ -178,17 +165,22 @@ fs.readFile(filepath, function (err, data) {
                     })];
             case 2:
                 _a.sent();
-                test.forEach(function (element) {
-                    direction = Object.keys(element)[0];
-                    var info = { url: element[direction], dir: direction };
+                obj.directions.forEach(function (element) {
+                    var info = { url: element.url, dir: element.name, sum: element.sum, average: element.averageCount };
                     cluster_1.queue(info);
                 });
-                //cluster.queue('https://p2p.binance.com/ru/trade/sell/USDT?fiat=RUB&payment=TinkoffNew&asset=USDT');
-                // many more pages
-                return [4 /*yield*/, cluster_1.idle()];
+                return [4 /*yield*/, cluster_1.idle().then(function () {
+                        var file = JSON.stringify(obj);
+                        fs.writeFile(filepath, file, function (err) {
+                            if (err) {
+                                console.log('Write error');
+                            }
+                            else {
+                                console.log(fs.readFileSync(filepath, "utf-8"));
+                            }
+                        });
+                    })];
             case 3:
-                //cluster.queue('https://p2p.binance.com/ru/trade/sell/USDT?fiat=RUB&payment=TinkoffNew&asset=USDT');
-                // many more pages
                 _a.sent();
                 return [4 /*yield*/, cluster_1.close()];
             case 4:
