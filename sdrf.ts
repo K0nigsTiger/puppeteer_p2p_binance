@@ -25,9 +25,7 @@ fs.readFile(filepath, (err, data) => {
     });
   
     await cluster.task(async ({ page, data }) => {
-      //await page.goto(url);
       await page.goto(data.url);
-  
       // Set screen size
       await page.setViewport({width: 1028, height: 1024});
   

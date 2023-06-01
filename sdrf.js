@@ -151,7 +151,7 @@ fs.readFile(filepath, function (err, data) {
                                         totalSum = parseFloat((totalSum / data.average).toPrecision(4));
                                         obj.directions.forEach(function (element, index) {
                                             if (element.name == data.dir) {
-                                                obj.directions[index].course = totalSum.toString();
+                                                obj.directions[index].course = totalSum;
                                                 obj.directions[index].datetime = Date.now();
                                             }
                                         });
