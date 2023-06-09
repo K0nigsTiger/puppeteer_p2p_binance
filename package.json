@@ -1,11 +1,5 @@
 {
     "type": "commonjs",
-    "direction": "Тинькофф",
-    "sum": 15000,
-    "averageCount": 6,
-    "timeout": 30,
-    "course": "81.74",
-    "datetime": 1684912943653,
     "dependencies": {
         "fs": "^0.0.1-security",
         "path": "^0.12.7",

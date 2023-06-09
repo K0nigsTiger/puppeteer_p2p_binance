@@ -61,102 +61,85 @@ fs.readFile(filepath, function (err, data) {
                 _a.trys.push([0, 5, , 6]);
                 return [4 /*yield*/, Cluster.launch({
                         concurrency: Cluster.CONCURRENCY_CONTEXT,
-                        maxConcurrency: 5,
+                        maxConcurrency: 8,
+                        monitor: true,
+                        puppeteerOptions: {
+                            headless: false,
+                        }
                     })];
             case 1:
                 cluster_1 = _a.sent();
                 return [4 /*yield*/, cluster_1.task(function (_a) {
                         var page = _a.page, data = _a.data;
                         return __awaiter(void 0, void 0, void 0, function () {
-                            var acceptCookie, fiatSelector, directionSelector, sumSet, amountSet, priceDivClass, selector, inner_html, totalSum, i;
+                            var amountSet, totalSum;
                             return __generator(this, function (_b) {
                                 switch (_b.label) {
-                                    case 0: 
-                                    //await page.goto(url);
-                                    return [4 /*yield*/, page.goto(data.url)];
+                                    case 0: return [4 /*yield*/, page.goto(data.url)];
                                     case 1:
-                                        //await page.goto(url);
                                         _b.sent();
-                                        // Set screen size
                                         return [4 /*yield*/, page.setViewport({ width: 1028, height: 1024 })];
                                     case 2:
-                                        // Set screen size
                                         _b.sent();
-                                        acceptCookie = '#onetrust-accept-btn-handler';
-                                        fiatSelector = '#C2Cfiatfilter_searchbox_fiat';
-                                        directionSelector = '#C2Cpaymentfilter_searchbox_payment';
-                                        sumSet = '#C2Csearchamount_btn_search';
                                         amountSet = '#C2Csearchamount_searchbox_amount';
-                                        return [4 /*yield*/, page.waitForTimeout(3000)];
+                                        return [4 /*yield*/, page.waitForSelector(amountSet).then(function () { return __awaiter(void 0, void 0, void 0, function () {
+                                                return __generator(this, function (_a) {
+                                                    switch (_a.label) {
+                                                        case 0: return [4 /*yield*/, page.type(amountSet, data.sum.toString()).then(function () { return __awaiter(void 0, void 0, void 0, function () {
+                                                                return __generator(this, function (_a) {
+                                                                    switch (_a.label) {
+                                                                        case 0: return [4 /*yield*/, page.evaluate(function () {
+                                                                                for (var _i = 0, _a = Array.from(document.querySelectorAll('div')); _i < _a.length; _i++) {
+                                                                                    var div = _a[_i];
+                                                                                    if (div.innerText == "Поиск" || div.innerText == "Search")
+                                                                                        div.click();
+                                                                                }
+                                                                            })];
+                                                                        case 1:
+                                                                            _a.sent();
+                                                                            return [2 /*return*/];
+                                                                    }
+                                                                });
+                                                            }); })];
+                                                        case 1:
+                                                            _a.sent();
+                                                            return [2 /*return*/];
+                                                    }
+                                                });
+                                            }); })];
                                     case 3:
                                         _b.sent();
-                                        return [4 /*yield*/, page.waitForSelector(acceptCookie)];
+                                        totalSum = 0;
+                                        return [4 /*yield*/, page.waitForSelector('div[data-tutorial-id="trade_price_limit"]').then(function () { return __awaiter(void 0, void 0, void 0, function () {
+                                                var priceDivClass, selector, inner_html, i;
+                                                return __generator(this, function (_a) {
+                                                    switch (_a.label) {
+                                                        case 0: return [4 /*yield*/, page.$eval('div[data-tutorial-id="trade_price_limit"]', function (element) { return element.innerHTML.toString().split('"')[1]; })];
+                                                        case 1:
+                                                            priceDivClass = _a.sent();
+                                                            selector = '.' + priceDivClass;
+                                                            return [4 /*yield*/, page.evaluate(function (selector) { return Array.from(document.querySelectorAll("".concat(selector)), function (e) { return e.innerHTML; }); }, selector)];
+                                                        case 2:
+                                                            inner_html = _a.sent();
+                                                            console.log(inner_html);
+                                                            for (i = 0; i < data.average; i++) {
+                                                                totalSum = totalSum + parseFloat(inner_html[i]);
+                                                            }
+                                                            totalSum = parseFloat((totalSum / data.average).toPrecision(4));
+                                                            return [2 /*return*/];
+                                                    }
+                                                });
+                                            }); })];
                                     case 4:
                                         _b.sent();
-                                        return [4 /*yield*/, page.click(acceptCookie)];
-                                    case 5:
-                                        _b.sent();
-                                        return [4 /*yield*/, page.waitForTimeout(1000)];
-                                    case 6:
-                                        _b.sent();
-                                        return [4 /*yield*/, page.type(amountSet, data.sum.toString())];
-                                    case 7:
-                                        _b.sent();
-                                        return [4 /*yield*/, page.click(sumSet)];
-                                    case 8:
-                                        _b.sent();
-                                        return [4 /*yield*/, page.waitForSelector(fiatSelector)];
-                                    case 9:
-                                        _b.sent();
-                                        return [4 /*yield*/, page.click(fiatSelector)];
-                                    case 10:
-                                        _b.sent();
-                                        return [4 /*yield*/, page.type("".concat(fiatSelector, " input"), 'RUB')];
-                                    case 11:
-                                        _b.sent();
-                                        return [4 /*yield*/, page.keyboard.press('Enter', "".concat(fiatSelector, " input"))];
-                                    case 12:
-                                        _b.sent();
-                                        return [4 /*yield*/, page.waitForTimeout(2000)];
-                                    case 13:
-                                        _b.sent();
-                                        return [4 /*yield*/, page.waitForSelector(directionSelector)];
-                                    case 14:
-                                        _b.sent();
-                                        return [4 /*yield*/, page.click(directionSelector)];
-                                    case 15:
-                                        _b.sent();
-                                        console.log(data.dir);
-                                        return [4 /*yield*/, page.type("".concat(directionSelector, " input"), data.dir.toString())];
-                                    case 16:
-                                        _b.sent();
-                                        return [4 /*yield*/, page.keyboard.press('Enter', "".concat(directionSelector, " input"))];
-                                    case 17:
-                                        _b.sent();
-                                        return [4 /*yield*/, page.waitForTimeout(2000)];
-                                    case 18:
-                                        _b.sent();
-                                        return [4 /*yield*/, page.$eval('div[data-tutorial-id="trade_price_limit"]', function (element) { return element.innerHTML.toString().split('"')[1]; })];
-                                    case 19:
-                                        priceDivClass = _b.sent();
-                                        selector = '.' + priceDivClass;
-                                        return [4 /*yield*/, page.evaluate(function (selector) { return Array.from(document.querySelectorAll("".concat(selector)), function (e) { return e.innerHTML; }); }, selector)];
-                                    case 20:
-                                        inner_html = _b.sent();
-                                        console.log(inner_html);
-                                        totalSum = 0;
-                                        for (i = 0; i < data.average; i++) {
-                                            totalSum = totalSum + parseFloat(inner_html[i]);
-                                        }
-                                        totalSum = parseFloat((totalSum / data.average).toPrecision(4));
                                         obj.directions.forEach(function (element, index) {
-                                            if (element.name == data.dir) {
+                                            if (element.name == data.dir && element.type == data.type) {
                                                 obj.directions[index].course = totalSum;
                                                 obj.directions[index].datetime = Date.now();
                                             }
                                         });
-                                        return [4 /*yield*/, page.screenshot({ path: path.resolve(_dirname, "./".concat(data.dir, ".png")) })];
-                                    case 21:
+                                        return [4 /*yield*/, page.screenshot({ path: path.resolve(_dirname, "./".concat(data.dir, "-").concat(data.type, ".png")) })];
+                                    case 5:
                                         _b.sent();
                                         return [2 /*return*/];
                                 }
@@ -166,10 +149,13 @@ fs.readFile(filepath, function (err, data) {
             case 2:
                 _a.sent();
                 obj.directions.forEach(function (element) {
-                    var info = { url: element.url, dir: element.name, sum: element.sum, average: element.averageCount };
+                    var info = { url: element.url, dir: element.name, sum: element.sum, average: element.averageCount, type: element.type };
                     cluster_1.queue(info);
                 });
-                return [4 /*yield*/, cluster_1.idle().then(function () {
+                return [4 /*yield*/, cluster_1.idle()];
+            case 3:
+                _a.sent();
+                return [4 /*yield*/, cluster_1.close().then(function () {
                         var file = JSON.stringify(obj);
                         fs.writeFile(filepath, file, function (err) {
                             if (err) {
@@ -180,9 +166,6 @@ fs.readFile(filepath, function (err, data) {
                             }
                         });
                     })];
-            case 3:
-                _a.sent();
-                return [4 /*yield*/, cluster_1.close()];
             case 4:
                 _a.sent();
                 return [3 /*break*/, 6];
