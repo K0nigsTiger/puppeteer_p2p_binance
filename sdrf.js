@@ -62,9 +62,9 @@ fs.readFile(filepath, function (err, data) {
                 return [4 /*yield*/, Cluster.launch({
                         concurrency: Cluster.CONCURRENCY_CONTEXT,
                         maxConcurrency: 8,
-                        monitor: true,
+                        monitor: false,
                         puppeteerOptions: {
-                            headless: false,
+                            headless: "new",
                         }
                     })];
             case 1:
@@ -82,19 +82,33 @@ fs.readFile(filepath, function (err, data) {
                                     case 2:
                                         _b.sent();
                                         amountSet = '#C2Csearchamount_searchbox_amount';
+                                        totalSum = 0;
                                         return [4 /*yield*/, page.waitForSelector(amountSet).then(function () { return __awaiter(void 0, void 0, void 0, function () {
                                                 return __generator(this, function (_a) {
                                                     switch (_a.label) {
                                                         case 0: return [4 /*yield*/, page.type(amountSet, data.sum.toString()).then(function () { return __awaiter(void 0, void 0, void 0, function () {
                                                                 return __generator(this, function (_a) {
                                                                     switch (_a.label) {
-                                                                        case 0: return [4 /*yield*/, page.evaluate(function () {
-                                                                                for (var _i = 0, _a = Array.from(document.querySelectorAll('div')); _i < _a.length; _i++) {
-                                                                                    var div = _a[_i];
-                                                                                    if (div.innerText == "Поиск" || div.innerText == "Search")
-                                                                                        div.click();
-                                                                                }
-                                                                            })];
+                                                                        case 0: return [4 /*yield*/, page.waitForSelector('.bn-table-tbody').then(function () { return __awaiter(void 0, void 0, void 0, function () {
+                                                                                var priceDivClass, selector, inner_html, i;
+                                                                                return __generator(this, function (_a) {
+                                                                                    switch (_a.label) {
+                                                                                        case 0: return [4 /*yield*/, page.$eval('.bn-table-tbody', function (e) { return e.querySelector('tr').children[1].children[0].children[0].className; })];
+                                                                                        case 1:
+                                                                                            priceDivClass = _a.sent();
+                                                                                            selector = '.' + priceDivClass;
+                                                                                            return [4 /*yield*/, page.evaluate(function (selector) { return Array.from(document.querySelectorAll("".concat(selector)), function (e) { return e.innerHTML; }); }, selector)];
+                                                                                        case 2:
+                                                                                            inner_html = _a.sent();
+                                                                                            console.log(inner_html);
+                                                                                            for (i = 0; i < data.average; i++) {
+                                                                                                totalSum = totalSum + parseFloat(inner_html[i]);
+                                                                                            }
+                                                                                            totalSum = parseFloat((totalSum / data.average).toPrecision(4));
+                                                                                            return [2 /*return*/];
+                                                                                    }
+                                                                                });
+                                                                            }); })];
                                                                         case 1:
                                                                             _a.sent();
                                                                             return [2 /*return*/];
@@ -109,29 +123,6 @@ fs.readFile(filepath, function (err, data) {
                                             }); })];
                                     case 3:
                                         _b.sent();
-                                        totalSum = 0;
-                                        return [4 /*yield*/, page.waitForSelector('div[data-tutorial-id="trade_price_limit"]').then(function () { return __awaiter(void 0, void 0, void 0, function () {
-                                                var priceDivClass, selector, inner_html, i;
-                                                return __generator(this, function (_a) {
-                                                    switch (_a.label) {
-                                                        case 0: return [4 /*yield*/, page.$eval('div[data-tutorial-id="trade_price_limit"]', function (element) { return element.innerHTML.toString().split('"')[1]; })];
-                                                        case 1:
-                                                            priceDivClass = _a.sent();
-                                                            selector = '.' + priceDivClass;
-                                                            return [4 /*yield*/, page.evaluate(function (selector) { return Array.from(document.querySelectorAll("".concat(selector)), function (e) { return e.innerHTML; }); }, selector)];
-                                                        case 2:
-                                                            inner_html = _a.sent();
-                                                            console.log(inner_html);
-                                                            for (i = 0; i < data.average; i++) {
-                                                                totalSum = totalSum + parseFloat(inner_html[i]);
-                                                            }
-                                                            totalSum = parseFloat((totalSum / data.average).toPrecision(4));
-                                                            return [2 /*return*/];
-                                                    }
-                                                });
-                                            }); })];
-                                    case 4:
-                                        _b.sent();
                                         obj.directions.forEach(function (element, index) {
                                             if (element.name == data.dir && element.type == data.type) {
                                                 obj.directions[index].course = totalSum;
@@ -139,7 +130,7 @@ fs.readFile(filepath, function (err, data) {
                                             }
                                         });
                                         return [4 /*yield*/, page.screenshot({ path: path.resolve(_dirname, "./".concat(data.dir, "-").concat(data.type, ".png")) })];
-                                    case 5:
+                                    case 4:
                                         _b.sent();
                                         return [2 /*return*/];
                                 }

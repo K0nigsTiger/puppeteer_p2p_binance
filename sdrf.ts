@@ -19,6 +19,7 @@ fs.readFile(filepath, (err, data) => {
 
 (async() => {
   try{
+
     const cluster = await Cluster.launch({
       concurrency: Cluster.CONCURRENCY_CONTEXT,
       maxConcurrency: 8,
@@ -33,28 +34,24 @@ fs.readFile(filepath, (err, data) => {
       await page.setViewport({width: 1028, height: 1024});
 
       const amountSet = '#C2Csearchamount_searchbox_amount';
+      let totalSum = 0;
 
       await page.waitForSelector(amountSet).then(async() => {
         await page.type(amountSet, data.sum.toString()).then(async() => {
-          await page.evaluate(() => {
-              for(let div of Array.from(document.querySelectorAll('div'))){
-                if(div.innerText == "Поиск" || div.innerText == "Search") div.click();
-              }
+          await page.waitForSelector('.bn-table-tbody').then(async() => {
+            const priceDivClass = await page.$eval('.bn-table-tbody', e => e.querySelector('tr').children[1].children[0].children[0].className);
+            let selector = '.' + priceDivClass;
+            const inner_html = await page.evaluate((selector) => Array.from(document.querySelectorAll(`${selector}`), e => e.innerHTML), selector);
+            console.log(inner_html);
+
+            for(let i = 0; i < data.average; i++){
+              totalSum = totalSum + parseFloat(inner_html[i]);
+            }
+
+            totalSum = parseFloat((totalSum / data.average).toPrecision(4));
+
           });
         });
-      });
-  
-      let totalSum = 0;
-      await page.waitForSelector('div[data-tutorial-id="trade_price_limit"]').then(async() => {
-        const priceDivClass = await page.$eval('div[data-tutorial-id="trade_price_limit"]', element => element.innerHTML.toString().split('"')[1]);
-        let selector = '.' + priceDivClass;
-        const inner_html = await page.evaluate((selector) => Array.from(document.querySelectorAll(`${selector}`), e => e.innerHTML), selector);
-        console.log(inner_html);
-
-        for(let i = 0; i < data.average; i++){
-          totalSum = totalSum + parseFloat(inner_html[i]);
-        }   
-        totalSum = parseFloat((totalSum / data.average).toPrecision(4));
       });
 
       obj.directions.forEach((element, index) => {
