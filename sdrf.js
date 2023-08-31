@@ -64,7 +64,7 @@ fs.readFile(filepath, function (err, data) {
                         maxConcurrency: 8,
                         monitor: false,
                         puppeteerOptions: {
-                            headless: "new",
+                            headless: "new", // set to false
                         }
                     })];
             case 1:

@@ -1,1 +1,76 @@
-{"directions":[{"name":"Тинькофф","type":"sell","sum":18000,"averageCount":6,"course":98.96,"datetime":1691758058842,"url":"https://p2p.binance.com/ru/trade/sell/USDT?fiat=RUB&payment=TinkoffNew&asset=USDT"},{"name":"Росбанк","type":"sell","sum":20000,"averageCount":5,"course":98.64,"datetime":1691758059669,"url":"https://p2p.binance.com/ru/trade/sell/USDT?fiat=RUB&payment=RosBankNew&asset=USDT"},{"name":"QIWI","type":"sell","sum":15000,"averageCount":5,"course":101.5,"datetime":1691758059338,"url":"https://p2p.binance.com/ru/trade/sell/USDT?fiat=RUB&payment=QIWI&asset=USDT"},{"name":"Райффайзенбанк","type":"sell","sum":15000,"averageCount":5,"course":98.65,"datetime":1691758059276,"url":"https://p2p.binance.com/ru/trade/sell/USDT?fiat=RUB&payment=RaiffeisenBank&asset=USDT"},{"name":"Тинькофф","type":"buy","sum":16400,"averageCount":5,"course":99.07,"datetime":1691758059624,"url":"https://p2p.binance.com/ru/trade/buy/USDT?fiat=RUB&payment=TinkoffNew&asset=USDT"},{"name":"Росбанк","type":"buy","sum":20000,"averageCount":5,"course":98.96,"datetime":1691758058691,"url":"https://p2p.binance.com/ru/trade/buy/USDT?fiat=RUB&payment=RosBankNew&asset=USDT"},{"name":"QIWI","type":"buy","sum":15000,"averageCount":5,"course":103,"datetime":1691758058899,"url":"https://p2p.binance.com/ru/trade/buy/USDT?fiat=RUB&payment=QIWI&asset=USDT"},{"name":"Райффайзенбанк","type":"buy","sum":15000,"averageCount":5,"course":99.05,"datetime":1691758059642,"url":"https://p2p.binance.com/ru/trade/buy/USDT?fiat=RUB&payment=RaiffeisenBank&asset=USDT"}]}
+{
+    "directions": [
+        {
+            "name": "Wise",
+            "type": "sell",
+            "sum": 100,
+            "averageCount": 6,
+            "course": 1.011,
+            "datetime": 1693484282733,
+            "url": "https://p2p.binance.com/ru/trade/sell/USDT?fiat=USD&payment=Wise"
+        },
+        {
+            "name": "Advcash",
+            "type": "sell",
+            "sum": 100,
+            "averageCount": 5,
+            "course": 0.9976,
+            "datetime": 1693484283781,
+            "url": "https://p2p.binance.com/ru/trade/sell/USDT?fiat=USD&payment=Advcash"
+        },
+        {
+            "name": "PerfectMoney",
+            "type": "sell",
+            "sum": 100,
+            "averageCount": 5,
+            "course": 1.041,
+            "datetime": 1693484283018,
+            "url": "https://p2p.binance.com/ru/trade/sell/USDT?fiat=USD&payment=PerfectMoney"
+        },
+        {
+            "name": "Payeer",
+            "type": "sell",
+            "sum": 100,
+            "averageCount": 5,
+            "course": 1.01,
+            "datetime": 1693484283231,
+            "url": "https://p2p.binance.com/ru/trade/sell/USDT?fiat=USD&payment=Payeer"
+        },
+        {
+            "name": "Wise",
+            "type": "buy",
+            "sum": 100,
+            "averageCount": 5,
+            "course": 1.018,
+            "datetime": 1693484283305,
+            "url": "https://p2p.binance.com/ru/trade/Wise/USDT?fiat=USD"
+        },
+        {
+            "name": "Advcash",
+            "type": "buy",
+            "sum": 100,
+            "averageCount": 5,
+            "course": 1.005,
+            "datetime": 1693484282800,
+            "url": "https://p2p.binance.com/ru/trade/Advcash/USDT?fiat=USD"
+        },
+        {
+            "name": "PerfectMoney",
+            "type": "buy",
+            "sum": 100,
+            "averageCount": 5,
+            "course": 1.049,
+            "datetime": 1693484283268,
+            "url": "https://p2p.binance.com/ru/trade/PerfectMoney/USDT?fiat=USD"
+        },
+        {
+            "name": "Payeer",
+            "type": "buy",
+            "sum": 100,
+            "averageCount": 5,
+            "course": 1.02,
+            "datetime": 1693484283730,
+            "url": "https://p2p.binance.com/ru/trade/Payeer/USDT?fiat=USD"
+        }
+    ]
+}

@@ -22,10 +22,10 @@ fs.readFile(filepath, (err, data) => {
 
     const cluster = await Cluster.launch({
       concurrency: Cluster.CONCURRENCY_CONTEXT,
-      maxConcurrency: 8,
+      maxConcurrency: 8, // set to number 1
       monitor: false,
       puppeteerOptions: {
-        headless: "new",
+        headless: "new", // set to boolean false
       }
     });
   
